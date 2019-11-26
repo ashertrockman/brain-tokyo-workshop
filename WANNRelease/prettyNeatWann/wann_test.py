@@ -30,18 +30,28 @@ def main(argv):
   updateHyp(hyp,hyp_adjust)
   task = WannGymTask(games[hyp['task']], nReps=hyp['alg_nReps'])
 
+  print(hyp)
+  # as defined in neat.py
+  neat_nConn = (hyp['ann_nInput']+1) * hyp['ann_nOutput']
+
+
   # Bullet needs some extra help getting started
   if hyp['task'].startswith("bullet"):
     task.env.render("human")
 
   # Import individual for testing
   wVec, aVec, wKey = importNet(infile)
+  # as defined in ind.py
+  wann_nConn = np.sum(wVec != 0)
+
+  print('nConn:', wann_nConn)
 
   # Show result
   fitness, wVals, impulses = task.getFitness(wVec, aVec, hyp,
                                 nVals=nMean, nRep=nRep,\
                                 view=view, returnVals=True, seed=seed)      
 
+  print('fitness:', fitness[0])
   name = hyp_adjust.split('/')[-1].split('.')[0]
   Name = name[0].upper() + name[1:]
   weights = wVals
